@@ -1,12 +1,13 @@
 use std::io::Read;
 use std::str;
+
 fn main() {}
 
 fn next_char(mut reader: &mut Read) -> char{
   let mut buf: Vec<u8> = Vec::new();
   let mut next = reader.take(1);
   next.read_to_end(&mut buf);
-  let mut s = str::from_utf8(&mut buf).unwrap();
+  let s = str::from_utf8(&mut buf).unwrap();
   //deal with utf-8 here
   println!("{:?}", s);
   let c = s.chars().next().unwrap();
