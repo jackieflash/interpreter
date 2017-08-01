@@ -1,23 +1,41 @@
+use std::fs::File;
 use std::io::Read;
+use std::io::BufReader;
 use std::str;
 
-fn main() {}
+fn main() {
+  let file = File::open("tempfile").unwrap();
+  let mut reader = BufReader::new(file);
+  let mut next = next_char(&mut reader);
+  if next != None {
+    print!("{:?}", next.unwrap());
+  }
+  while next != None {
+    next = next_char(&mut reader);
+    if next != None {
+      print!("{:?}", next.unwrap());
+    }
+  }
+}
 
-fn next_char(mut reader: &mut Read) -> char{
+fn next_char(mut reader: &mut Read) -> Option<char> {
   let mut buf: Vec<u8> = Vec::new();
   let mut next = reader.take(1);
-  next.read_to_end(&mut buf);
-  let s = str::from_utf8(&mut buf).unwrap();
-  //deal with utf-8 here
-  println!("{:?}", s);
-  let c = s.chars().next().unwrap();
-  c
+  let result = next.read_to_end(&mut buf);
+  if result.unwrap() == 1 {
+    let s = str::from_utf8(&mut buf).unwrap();
+    //TODO: handle utf here
+    let c = s.chars().next().unwrap();
+    Some(c)
+  }
+  else {
+    None
+  }
 }
 
 #[cfg(test)]
 mod tests {
   use std::fs::File;
-  use std::io::Read;
   use std::io::BufReader;
   use std::str;
   use next_char;
@@ -27,22 +45,22 @@ mod tests {
     let file = File::open("tests/simple_ascii").unwrap();
     let mut reader = BufReader::new(file);
     let mut next = next_char(&mut reader);
-    assert_eq!('a', next);
+    assert_eq!('a', next.unwrap());
     next = next_char(&mut reader);
-    assert_eq!('b', next);
+    assert_eq!('b', next.unwrap());
     next = next_char(&mut reader);
-    assert_eq!('c', next);
+    assert_eq!('c', next.unwrap());
     next = next_char(&mut reader);
-    assert_eq!('d', next);
+    assert_eq!('d', next.unwrap());
     next = next_char(&mut reader);
-    assert_eq!(' ', next);
+    assert_eq!(' ', next.unwrap());
     next = next_char(&mut reader);
-    assert_eq!('0', next);
+    assert_eq!('0', next.unwrap());
     next = next_char(&mut reader);
-    assert_eq!('1', next);
+    assert_eq!('1', next.unwrap());
     next = next_char(&mut reader);
-    assert_eq!('2', next);
+    assert_eq!('2', next.unwrap());
     next = next_char(&mut reader);
-    assert_eq!('3', next);
+    assert_eq!('3', next.unwrap());
   }
 }
