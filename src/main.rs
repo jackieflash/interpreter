@@ -5,12 +5,9 @@ use utf_read::UTFReadIter;
 mod utf_read;
 
 fn main() {
-    let mut reader = UTFReadIter::new(File::open("tempfile").unwrap());
-    loop {
-        match reader.next() {
-            None => break,
-            Some(dat) => println!("{:?}", dat),
-        }
+    let reader = UTFReadIter::new(File::open("tempfile").unwrap());
+    for dat in reader {
+        println!("{:?}", dat);
     }
 }
 
